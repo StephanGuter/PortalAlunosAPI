@@ -32,7 +32,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
-const { SERVER_PORT: port = 3333 } = process.env;
+const { SERVER_PORT: port = 80 } = process.env;
 
 app.listen({ port }, () => {
   console.log(`🚀 Server ready on port ${port}`);
