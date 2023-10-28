@@ -1,7 +1,39 @@
-import http from 'node:http'
+import express from 'express';
+import pg  from 'pg'
+import dotenv from 'dotenv'
 
-const server = http.createServer((req, res) => {
-    return res.end('Hello World')
+dotenv.config()
+
+const app = express();
+
+const { Pool } = pg
+
+const pool = new Pool({
+    user: process.env.RDS_USER,
+    host: process.env.RDS_HOST,
+    database: process.env.RDS_SCHEMA,
+    password: process.env.RDS_PASSWORD,
+    port: process.env.RDS_PORT,
+    ssl: {
+        rejectUnauthorized: false
+    },
 })
 
-server.listen(3333)
+app.get('/courses', async (req, res) => {
+    try {
+      const client = await pool.connect();
+      const result = await client.query('SELECT * FROM course');
+      client.release();
+  
+      res.json(result.rows);
+    } catch (err) {
+      console.error('Error executing query', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+const { SERVER_PORT: port = 3333 } = process.env;
+
+app.listen({ port }, () => {
+  console.log(`🚀 Server ready on port ${port}`);
+});
