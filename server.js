@@ -9,8 +9,8 @@ const app = express();
 const { Pool } = pg
 
 const pool = new Pool({
-    user: process.env.RDS_USER,
-    host: process.env.RDS_HOST,
+    user: process.env.RDS_USERNAME,
+    host: process.env.RDS_HOSTNAME,
     database: process.env.RDS_SCHEMA,
     password: process.env.RDS_PASSWORD,
     port: process.env.RDS_PORT,
@@ -32,7 +32,7 @@ app.get('/courses', async (req, res) => {
     }
 });
 
-const { SERVER_PORT: port = 80 } = process.env;
+const { SERVER_PORT: port = 8080 } = process.env;
 
 app.listen({ port }, () => {
   console.log(`🚀 Server ready on port ${port}`);
